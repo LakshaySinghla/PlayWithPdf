@@ -20,8 +20,7 @@ import com.adobe.pdfservices.operation.pdfjobs.params.compresspdf.CompressPDFPar
 import com.adobe.pdfservices.operation.pdfjobs.params.compresspdf.CompressionLevel;
 import com.adobe.pdfservices.operation.pdfjobs.result.CompressPDFResult;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static com.singhla.common.FileUtil.createOutputFilePath;
+import static org.apache.commons.lang3.EnumUtils.isValidEnum;
 
 /**
  * This sample illustrates how to compress PDF by reducing the size of the PDF file on the basis of
@@ -46,13 +46,17 @@ public class CompressPDFWithOptions {
     public static void main(String[] args) {
 
         // Validate arguments
-        if (args.length < 2) {
-            System.err.println("Usage: java -cp PlayWithPDF-1.0.jar com.singhla.CompressPDF.CompressPDFWithOptions <input_pdf_path> <compression_level(LOW,MEDIUM,HIGH)>");
+        if (args.length < 1) {
+            System.err.println("Usage: java -cp PlayWithPDF-1.0.jar com.singhla.CompressPDF.CompressPDFWithOptions <input_pdf_path> <compression_level(LOW,MEDIUM,HIGH)(Optional)>");
             System.exit(1);
+        }
+        System.out.println(args[0]);
+        if (args.length == 2) {
+            System.out.println(args[1]);
         }
 
         String inputPdfPath = args[0];
-        String compressionLevel = args[1];
+        String compressionLevel = args.length < 2  || StringUtils.isBlank(args[1]) ? "MEDIUM" : StringUtils.trim(args[1]);
 
         // Validate input file
         File inputFile = new File(inputPdfPath);
@@ -61,8 +65,8 @@ public class CompressPDFWithOptions {
             System.exit(1);
         }
 
-        if (CompressionLevel.valueOf(compressionLevel) == null) {
-            System.err.println("Error: CompressionLevel is not valid: " + compressionLevel + ". Valid options are (LOW, MEDIUM, HIGH)");
+        if(!isValidEnum(CompressionLevel.class, compressionLevel)) {
+            System.out.println("Error: CompressionLevel is not valid: " + compressionLevel + ". Valid options are (LOW, MEDIUM, HIGH)");
             System.exit(1);
         }
 

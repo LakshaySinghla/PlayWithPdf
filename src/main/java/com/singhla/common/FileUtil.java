@@ -1,3 +1,8 @@
+/*
+ * Copyright 2025 Singhla
+ * All Rights Reserved.
+ */
+
 package com.singhla.common;
 
 import java.io.IOException;
